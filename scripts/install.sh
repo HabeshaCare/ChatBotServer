@@ -9,4 +9,4 @@ pip install -qr requirements.txt
 
 echo "Setup complete"
 
-# TODO: see how installing dependancies here goes with installind dependancies in the docker file.
+# TODO: see how installing dependancies here goes with installing dependancies in the docker file.
