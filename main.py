@@ -27,9 +27,8 @@ def create_app():
                     400,
                 )
 
-            response, passage, summary = generate(query, db)
-            # print(f"request host: {request.host}")
-            data = {"Response": response, "Context": passage, "Summary": summary}
+            response, _ = generate(query)
+            data = {"Response": response}
 
             try:
                 url = f"{llm_url}/getlawyers"
