@@ -3,7 +3,6 @@ from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 import requests
 from src.LLM import generate, loadMessagesToMemory
-from conf.Models import llm_url
 
 
 def create_app():

@@ -7,8 +7,6 @@ from langchain.memory import ConversationBufferMemory
 
 load_dotenv()
 api_key = os.environ.get("GOOGLE_API_KEY")
-shared_secret = os.environ.get("LLM_SERVER_SECRET")
-llm_url = os.environ.get("LLM_URL")
 
 palm.configure(api_key=api_key)
 
