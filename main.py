@@ -30,27 +30,6 @@ def create_app():
             response, _ = generate(query)
             data = {"Response": response}
 
-            try:
-                url = f"{llm_url}/getlawyers"
-                print(f"Getting lawyers from {url}")
-                # Make an internal request to the /api/data route
-                response = requests.post(url, json={"query": query})
-                response.raise_for_status()
-                if response.status_code == 200:
-                    laywersData = response.json()
-                    if "lawyersData" in laywersData:
-                        lawyers = laywersData["lawyersData"]
-                        data["lawyers"] = lawyers
-                        print(f"Finished getting lawyers")
-                    else:
-                        data["lawyers"] = []
-                        print(laywersData)
-
-            except requests.exceptions.RequestException as e:
-                print(e)
-                data["lawyers"] = []
-                data["lawyerError"] = str(e)
-
             print(f"Sending back data")
             return jsonify(data)
 

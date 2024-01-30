@@ -3,12 +3,11 @@ import re
 from langchain.prompts.prompt import PromptTemplate
 from utils.HelperFunctions import check_token, parse_response
 from conf.Models import text_model, memory
-from langchain.chains import ConversationChain
+from langchain.chains import LLMChain
 
 
 # Function to return a structured format of the prompt
 def make_prompt() -> str:
-    escaped = re.sub(r"\s+", " ", escaped)
     DEFAULT_TEMPLATE = """
          You are  Hakime a health assistant for patients, especially on stroke.
          You will be given a question below, and you are not allowed to answer a question that is not related to health and medicine
@@ -16,14 +15,10 @@ def make_prompt() -> str:
          if you are asked who you are or what you say that you are  NuroGen a health assistant
          just tell the user that you cannot answer a question not related to health . 
          If the question is related to health, give a response.
+Previous Conversation: {history}
 Human: {input}
 """
-    PROMPT = PromptTemplate(
-        input_variables=["history", "input"],
-        template=DEFAULT_TEMPLATE,
-    )
-
-    PROMPT = PROMPT.partial(context=escaped)
+    PROMPT = PromptTemplate.from_template(DEFAULT_TEMPLATE)
 
     return PROMPT
 
@@ -33,7 +28,7 @@ def generate(
     model=text_model,
 ):
     prompt = make_prompt()
-    conversation = ConversationChain(
+    conversation = LLMChain(
         prompt=prompt, llm=model, memory=memory, verbose=False
     )
     try:
