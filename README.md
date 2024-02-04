@@ -33,12 +33,12 @@ Alternatively, you can use Docker to run the server:
 
 1. **Build Docker Image:**
    ```bash
-   docker build -t ChatBotServer .
+   docker build -t chatbotserver .
    ```
 
 2. **Run Docker Container:**
    ```bash
-   docker run -p 5000:5000 ChatBotServer
+   docker run -p 5000:5000 chatbotserver
    ```
 
    The server will run on `http://localhost:5000`.
