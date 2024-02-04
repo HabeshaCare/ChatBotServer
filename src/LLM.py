@@ -9,10 +9,10 @@ from langchain.chains import LLMChain
 # Function to return a structured format of the prompt
 def make_prompt() -> str:
     DEFAULT_TEMPLATE = """
-         You are  Hakime a health assistant for patients, especially on stroke.
+         You are  Hakime a health assistant for patients.
          You will be given a question below, and you are not allowed to answer a question that is not related to health and medicine
-         if the question is greeting you are alowed to answer 
-         if you are asked who you are or what you say that you are  NuroGen a health assistant
+         if the question is greeting you are allowed to answer 
+         if you are asked who you are or what you say that you are  Hakime a health assistant
          just tell the user that you cannot answer a question not related to health . 
          If the question is related to health, give a response.
 Previous Conversation: {history}
@@ -28,9 +28,7 @@ def generate(
     model=text_model,
 ):
     prompt = make_prompt()
-    conversation = LLMChain(
-        prompt=prompt, llm=model, memory=memory, verbose=False
-    )
+    conversation = LLMChain(prompt=prompt, llm=model, memory=memory, verbose=False)
     try:
         history = memory.load_memory_variables({}).get("history")
 
