@@ -1,6 +1,6 @@
 # This module contains functions related to LLM and Translation. AI in general.
 import re
-from langchain.prompts.prompt import PromptTemplate
+from langchain.prompts import PromptTemplate
 from utils.HelperFunctions import check_token, parse_response
 from conf.Models import text_model, memory
 from langchain.chains import LLMChain

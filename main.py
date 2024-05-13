@@ -33,9 +33,8 @@ def create_app():
             return jsonify(data)
 
         else:
-            return jsonify({"success": True, "message": "Message recieved"})
+            return jsonify({"success": True, "message": "Message received"})
 
-    
     @app.route("/loadcontext", methods=["POST"])
     def load_context():
         if request.method == "POST":
