@@ -1,4 +1,4 @@
-# This module contains functions related to LLM and Tranlation. AI in general.
+# This module contains functions related to LLM and Translation. AI in general.
 import re
 from langchain.prompts.prompt import PromptTemplate
 from utils.HelperFunctions import check_token, parse_response
@@ -49,7 +49,7 @@ def generate(
     except Exception as e:
         print(e)
         return (
-            "Hakime can't answer your question since there isn't enough context. Please try rephrasing your quesiton or ask another one!",
+            "Hakime can't answer your question since there isn't enough context. Please try rephrasing your question or ask another one!",
             "",
         )
 
