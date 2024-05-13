@@ -12,7 +12,8 @@ def create_app():
     @app.route("/ask", methods=["POST", "HEAD"])
     def generate_response():
         if request.method == "POST":
-            query = request.json["query"]
+            query = request.json.get("query", "")
+            patient_history = request.json.get("history", [])
 
             if not any(char.isalpha() for char in query):
                 # Query doesn't have any alpha characters
@@ -26,7 +27,7 @@ def create_app():
                     400,
                 )
 
-            response, _ = generate(query)
+            response, _ = generate(query, patient_history)
             data = {"Response": response}
 
             print(f"Sending back data")
