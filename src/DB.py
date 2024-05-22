@@ -25,7 +25,7 @@ def get_or_create_index(name: str):
 def get_vectors_with_doctor_id(doctor_id: str, index):
     result = index.query(
         vector=[0.1 for _ in range(768)],
-        filter={"doctor_id": doctor_id},
+        filter={"doctor_id": {"$eq": doctor_id}},
         include_metadata=True,
         include_values=False,
         top_k=1,
@@ -43,8 +43,9 @@ def delete_from_index(doctor_id: str, index) -> None:
     return
 
 
-# def update_from_index(id: str, index) -> None:
-#     index.delete(ids=ids)
+def update_from_index(doctor_id: str, updated_document, index) -> None:
+
+    pass
 
 
 # Function to create embeddings for given documents using palm's embedding model
