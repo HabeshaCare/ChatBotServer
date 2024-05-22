@@ -38,7 +38,7 @@ def delete_from_index(doctor_id: str, index) -> None:
     result = get_vectors_with_doctor_id(doctor_id, index)
 
     if len(result) != 0:
-        index.delete(ids=[r.get("metadata").get("doctor_id") for r in result])
+        index.delete(ids=[r.get("id") for r in result])
 
     return
 
