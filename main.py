@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 import requests
-from src.DB import search_doctor
+from src.DB import delete_doctor, search_doctor, update_doctor
 from src.LLM import generate, loadMessagesToMemory
 
 
@@ -51,8 +51,81 @@ def create_app():
         return jsonify({"success": True})
 
     @app.route("/doctor/search", methods=["POST"])
-    def search(query):
+    def search():
+        if "query" not in request.json:
+            response = jsonify(
+                {
+                    "success": False,
+                    "message": "Please make sure to add query parameter",
+                    "statusCode": 400,
+                    "data": None,
+                    "errors": ["Missing query to search"],
+                }
+            )
+            return response, 400
+        query = request.json.get("query")
         return search_doctor(query)
+
+    @app.route("/doctor/", methods=["POST"])
+    def add_doctor():
+        if "doctor" not in request.json:
+            response = jsonify(
+                {
+                    "success": False,
+                    "message": "Doctor data not provided",
+                    "statusCode": 400,
+                    "data": None,
+                    "errors": ["Missing doctor to add"],
+                }
+            )
+            return response, 400
+
+        doctor = request.json.get("doctor")
+        return add_doctor(doctor)
+
+    @app.route("/doctor/<doctor_id:string>", methods=["PUT", "DELETE"])
+    def doctor(doctor_id):
+        if request.method == "PUT":
+            if "doctor" not in request.json:
+                response = jsonify(
+                    {
+                        "success": False,
+                        "message": "Doctor data not provided",
+                        "statusCode": 400,
+                        "data": None,
+                        "errors": ["Missing doctor data to update"],
+                    }
+                )
+            if "doctor_id" not in request.json:
+                response = {
+                    "success": False,
+                    "message": "Doctor id not provided",
+                    "statusCode": 400,
+                    "data": None,
+                    "errors": ["Missing doctor_id to update"],
+                }
+
+                return jsonify(response), 400
+            doctor_id = request.json.get("doctor_id")
+            updated_doctor = request.json.get("updated_doctor")
+            return update_doctor(doctor_id, updated_doctor)
+        elif request.method == "DELETE":
+            if "doctor_id" not in request.json:
+                return (
+                    jsonify(
+                        {
+                            "success": False,
+                            "message": "Doctor id not provided",
+                            "statusCode": 400,
+                            "data": None,
+                            "errors": ["Missing doctor_id to delete"],
+                        }
+                    ),
+                    400,
+                )
+            return delete_doctor(doctor_id)
+        else:
+            abort(502, "Unsupported request method")
 
     return app
 

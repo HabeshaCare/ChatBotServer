@@ -143,17 +143,69 @@ def search_doctor(query: str):
 
         response = {
             "success": True,
-            "status": 200,
+            "statusCode": 200,
             "data": formatted_results,
+            "errors": [],
             "message": f"Found {len(formatted_results)} matching doctors",
         }
         return jsonify(response), 200
     except Exception as e:
         response = {
             "success": False,
-            "status": 500,
+            "statusCode": 500,
             "data": None,
             "errors": [str(e)],
             "message": "Searching for doctors failed",
         }
+        return jsonify(response), 500
+
+
+def update_doctor(doctor_id, updated_doctor):
+    try:
+        index = pc.Index("doctors")
+        updated = update_from_index(doctor_id, updated_doctor, index)
+        response = {
+            "success": updated,
+            "statusCode": 201,
+            "message": "Updated doctor success: " + str(updated),
+            "errors": [],
+            "data": None,
+        }
+        return jsonify(response), 201
+
+    except Exception as e:
+        response = {
+            "success": False,
+            "data": None,
+            "errors": [str(e)],
+            "message": "something went wrong while updating doctor",
+            "statusCode": 500,
+        }
+        return jsonify(response), 500
+
+
+def delete_doctor(doctor_id):
+    try:
+        index = pc.Index("doctors")
+        deleted = delete_from_index(doctor_id, index)
+
+        response = {
+            "success": deleted,
+            "data": None,
+            "errors": [],
+            "message": "Deleting doctor success: " + str(deleted),
+            "statusCode": 201,
+        }
+
+        return jsonify(response), 201
+
+    except Exception as e:
+        response = {
+            "success": False,
+            "data": None,
+            "errors": [str(e)],
+            "message": "Something went wrong while deleting doctor",
+            "statusCode": 500,
+        }
+
         return jsonify(response), 500
