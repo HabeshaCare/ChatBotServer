@@ -7,6 +7,9 @@ from utils.HelperFunctions import check_token, generate_random_string
 from pinecone import Pinecone, ServerlessSpec
 from pinecone.exceptions import PineconeApiException
 
+from utils.InputUtils import prepare_query
+from flask import jsonify
+
 
 def get_or_create_index(name: str):
     try:
@@ -106,7 +109,7 @@ def empty_index(index):
 
 
 # Function to query the index with a question and get the top 3 documents and filters out any irrelevant ones
-def get_relevant_results(query: str, index, metadata=False, results=3):
+def get_relevant_results(query: str, index, metadata=True, results=3):
     embedding_query = embedding_model.embed_query(query)
 
     results = index.query(
@@ -120,3 +123,37 @@ def get_relevant_results(query: str, index, metadata=False, results=3):
     results = [result for result in results if result["score"] > 0.5]
 
     return results
+
+
+def search_doctor(query: str):
+    try:
+        index = pc.Index("doctors")
+        query = prepare_query(query)
+
+        print(query)
+
+        results = get_relevant_results(query, index, metadata=True, results=20)
+        formatted_results = [
+            {
+                "id": res.get("metadata", {}).get("doctor_id", {}),
+                "score": res.get("score", 0.0),
+            }
+            for res in results
+        ]
+
+        response = {
+            "success": True,
+            "status": 200,
+            "data": formatted_results,
+            "message": f"Found {len(formatted_results)} matching doctors",
+        }
+        return jsonify(response), 200
+    except Exception as e:
+        response = {
+            "success": False,
+            "status": 500,
+            "data": None,
+            "errors": [str(e)],
+            "message": "Searching for doctors failed",
+        }
+        return jsonify(response), 500

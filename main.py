@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 import requests
+from src.DB import search_doctor
 from src.LLM import generate, loadMessagesToMemory
 
 
@@ -48,6 +49,10 @@ def create_app():
     @app.route("/wake", methods=["GET", "HEAD"])
     def wake():
         return jsonify({"success": True})
+
+    @app.route("/doctor/search", methods=["POST"])
+    def search(query):
+        return search_doctor(query)
 
     return app
 

@@ -3,7 +3,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 
 
-def generate_embedding(json_data):
+def prepare_embedding(json_data):
     description = json_data.get("Description", "")
     specialization = json_data.get("Specialization", "")
     years_of_experience = json_data.get("yearOfExperience", "")
@@ -22,9 +22,9 @@ def generate_embedding(json_data):
     return embedding_string
 
 
-def extract_fields(query):
+def prepare_query(query):
     template = """
-        Extract the fields and return a string strictly following the following format from the following input query and output it in the following format. You shouldn't output anything else except for the fields in specified format. If you couldnt' find the feild, leave it blank and don't put any text as it's value
+        Extract the fields and return a string strictly following the following format from the following input query and output it in the following format. You shouldn't output anything else except for the fields in specified format. If you couldn't' find the felid, leave it blank and don't put any text as it's value just leave the key before it and end it with the ':'. 
         Text: {query}
         Format: ``` Description: 'This is a catch all field for anything that didn't match in the rest and if you think it is relevant to find a doctor' 
                     Specialization: 'The doctors specialization' 
