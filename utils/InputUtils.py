@@ -4,8 +4,8 @@ from langchain.prompts import PromptTemplate
 
 
 def prepare_embedding(json_data):
-    description = json_data.get("Description", "")
-    specialization = json_data.get("Specialization", "")
+    description = json_data.get("description", "")
+    specialization = json_data.get("specialization", "")
     years_of_experience = json_data.get("yearOfExperience", "")
     name = json_data.get("fullname", "")
     gender = json_data.get("gender", "")

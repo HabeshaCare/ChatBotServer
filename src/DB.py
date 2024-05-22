@@ -49,6 +49,7 @@ def delete_from_index(doctor_id: str, index) -> None:
 def update_from_index(doctor_id: str, updated_document, index) -> None:
     result = get_vector_with_doctor_id(doctor_id, index)
     if len(result) != 0:
+        updated_document = prepare_embedding(updated_document)
         embedding = embed_function([updated_document])
         index.upsert(
             vectors=[
@@ -91,12 +92,14 @@ def create_pinecone_index(name: str, documents: List[str] = None):
 
 # Function to add to the Pinecone index after the index is set up given the documents array and index
 def add_to_index(documents, index):
-    embeddings = embed_function(documents)
+    doctor = documents[0]
+    doctor = prepare_embedding(json_data=doctor)
+    embeddings = embed_function([doctor])
     annotated_documents = [
         {
             "id": generate_random_string(),
             "values": embedding,
-            "metadata": {"doctor_id": document},
+            "metadata": {"doctor_id": document.get("id")},
         }
         for embedding, document in zip(embeddings, documents)
     ]
@@ -167,8 +170,6 @@ def search_doctor(query: str):
 
 def create_doctor(doctor):
     try:
-        doctor = prepare_embedding(json_data=doctor)
-
         index = pc.Index("doctors")
         success = add_to_index([doctor], index)
 
