@@ -7,7 +7,7 @@ from utils.HelperFunctions import check_token, generate_random_string
 from pinecone import Pinecone, ServerlessSpec
 from pinecone.exceptions import PineconeApiException
 
-from utils.InputUtils import prepare_query
+from utils.InputUtils import prepare_embedding, prepare_query
 from flask import jsonify
 
 
@@ -100,8 +100,12 @@ def add_to_index(documents, index):
         }
         for embedding, document in zip(embeddings, documents)
     ]
+    insert_success = True
     for document in tqdm(annotated_documents):
-        index.upsert(vectors=[document])
+        result = index.upsert(vectors=[document])
+        insert_success &= len(result) != 0
+
+    return insert_success
 
 
 def empty_index(index):
@@ -158,6 +162,35 @@ def search_doctor(query: str):
             "errors": [str(e)],
             "message": "Searching for doctors failed",
         }
+        return jsonify(response), 500
+
+
+def create_doctor(doctor):
+    try:
+        doctor = prepare_embedding(json_data=doctor)
+
+        index = pc.Index("doctors")
+        success = add_to_index([doctor], index)
+
+        response = {
+            "success": success,
+            "statusCode": 200,
+            "data": None,
+            "errors": [],
+            "message": "Adding doctor success: " + str(success),
+        }
+
+        return jsonify(response), 200
+
+    except Exception as e:
+        response = {
+            "success": False,
+            "statusCode": 500,
+            "data": None,
+            "errors": [str(e)],
+            "message": "Something went wrong while adding doctor",
+        }
+
         return jsonify(response), 500
 
 

@@ -1,8 +1,7 @@
 import os
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
-import requests
-from src.DB import delete_doctor, search_doctor, update_doctor
+from src.DB import create_doctor, delete_doctor, search_doctor, update_doctor
 from src.LLM import generate, loadMessagesToMemory
 
 
@@ -81,7 +80,7 @@ def create_app():
             return response, 400
 
         doctor = request.json.get("doctor")
-        return add_doctor(doctor)
+        return create_doctor(doctor)
 
     @app.route("/doctor/<string:doctor_id>", methods=["PUT", "DELETE"])
     def doctor(doctor_id):
