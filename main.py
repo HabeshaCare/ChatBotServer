@@ -83,7 +83,7 @@ def create_app():
         doctor = request.json.get("doctor")
         return add_doctor(doctor)
 
-    @app.route("/doctor/<doctor_id:string>", methods=["PUT", "DELETE"])
+    @app.route("/doctor/<string:doctor_id>", methods=["PUT", "DELETE"])
     def doctor(doctor_id):
         if request.method == "PUT":
             if "doctor" not in request.json:
