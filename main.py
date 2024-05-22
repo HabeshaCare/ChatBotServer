@@ -1,7 +1,13 @@
 import os
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
-from src.DB import create_doctor, delete_doctor, search_doctor, update_doctor
+from src.DB import (
+    create_doctor,
+    delete_doctor,
+    reset_database,
+    search_doctor,
+    update_doctor,
+)
 from src.LLM import generate, loadMessagesToMemory
 
 
@@ -126,7 +132,7 @@ def create_app():
             abort(502, "Unsupported request method")
 
     @app.route("/doctor/reset")
-    def reset_database():
+    def reset():
         return reset_database()
 
     return app
