@@ -105,8 +105,7 @@ def create_app():
                 }
 
                 return jsonify(response), 400
-            doctor_id = request.json.get("doctor_id")
-            updated_doctor = request.json.get("updated_doctor")
+            updated_doctor = request.json.get("doctor")
             return update_doctor(doctor_id, updated_doctor)
         elif request.method == "DELETE":
             if not doctor_id:
