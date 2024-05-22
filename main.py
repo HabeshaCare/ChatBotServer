@@ -96,7 +96,7 @@ def create_app():
                         "errors": ["Missing doctor data to update"],
                     }
                 )
-            if "doctor_id" not in request.json:
+            if not doctor_id:
                 response = {
                     "success": False,
                     "message": "Doctor id not provided",
@@ -110,7 +110,7 @@ def create_app():
             updated_doctor = request.json.get("updated_doctor")
             return update_doctor(doctor_id, updated_doctor)
         elif request.method == "DELETE":
-            if "doctor_id" not in request.json:
+            if not doctor_id:
                 return (
                     jsonify(
                         {
