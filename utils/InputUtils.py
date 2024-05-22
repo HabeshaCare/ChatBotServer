@@ -4,6 +4,10 @@ from langchain.prompts import PromptTemplate
 
 
 def prepare_embedding(json_data):
+
+    if "id" not in json_data or json_data.get("id") == None:
+        raise ValueError("Id attribute is required")
+
     description = json_data.get("description", "")
     specialization = json_data.get("specialization", "")
     years_of_experience = json_data.get("yearOfExperience", "")

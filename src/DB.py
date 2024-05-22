@@ -106,7 +106,7 @@ def add_to_index(documents, index):
     insert_success = True
     for document in tqdm(annotated_documents):
         result = index.upsert(vectors=[document])
-        insert_success &= len(result) != 0
+        insert_success &= result.get("upserted_count") > 0
 
     return insert_success
 
