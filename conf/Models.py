@@ -1,19 +1,20 @@
-import os
-from dotenv import load_dotenv
-import google.generativeai as palm
-from langchain.llms import GooglePalm
 from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+
+from src import GOOGLE_API_KEY
 
 
-load_dotenv()
-api_key = os.environ.get("GOOGLE_API_KEY")
-
-palm.configure(api_key=api_key)
-
-# Selecting the first and only text generation model available in palm
-text_model = GooglePalm(temperature=0.0, google_api_key=api_key)
-
-memory = ConversationBufferMemory(
-    ai_prefix="AI",
-    llm=text_model
+text_model = ChatGoogleGenerativeAI(
+    model="gemini-pro",
+    google_api_key=GOOGLE_API_KEY,
+    temperature=0.2,
+    convert_system_message_to_human=True,
 )
+
+embedding_model = GoogleGenerativeAIEmbeddings(
+    model="models/embedding-001", google_api_key=GOOGLE_API_KEY
+)
+# Selecting the first and only text generation model available in palm
+
+memory = ConversationBufferMemory(ai_prefix="AI", llm=text_model)
