@@ -1,9 +1,12 @@
+import random
 import string
+
 
 # Checks whether the string has passed the token limit of PaLM
 def check_token(input: str, limit: int = 4096) -> int:
     chars = len(input)
     return (chars / 4) <= limit
+
 
 def parse_response(
     response: string,
@@ -17,3 +20,8 @@ def parse_response(
                 return answer
 
     return ""
+
+
+def generate_random_string(length=8):
+    characters = string.ascii_letters + string.digits
+    return "".join(random.choice(characters) for _ in range(length))
