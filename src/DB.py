@@ -182,6 +182,14 @@ def create_doctor(doctor):
 
         return jsonify(response), 200
 
+    except ValueError as e:
+        response = {
+            "success": False,
+            "statusCode": 400,
+            "data": None,
+            "errors": [str(e)],
+            "message": "Please make sure the doctor data is provided correctly",
+        }
     except Exception as e:
         response = {
             "success": False,
