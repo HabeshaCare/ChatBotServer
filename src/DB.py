@@ -1,4 +1,3 @@
-import json
 from tqdm.auto import tqdm
 import time
 from typing import List
@@ -23,8 +22,29 @@ def get_or_create_index(name: str):
             raise e
 
 
-def delete_from_index(ids: List[str], index) -> None:
-    index.delete(ids=ids)
+def get_vectors_with_doctor_id(doctor_id: str, index):
+    result = index.query(
+        vector=[0.1 for _ in range(768)],
+        filter={"doctor_id": doctor_id},
+        include_metadata=True,
+        include_values=False,
+        top_k=1,
+    )
+    result = result.get("matches")
+    return result
+
+
+def delete_from_index(doctor_id: str, index) -> None:
+    result = get_vectors_with_doctor_id(doctor_id, index)
+
+    if len(result) != 0:
+        index.delete(ids=[r.get("metadata").get("doctor_id") for r in result])
+
+    return
+
+
+# def update_from_index(id: str, index) -> None:
+#     index.delete(ids=ids)
 
 
 # Function to create embeddings for given documents using palm's embedding model
@@ -60,7 +80,7 @@ def add_to_index(documents, index):
         {
             "id": generate_random_string(),
             "values": embedding,
-            "metadata": {"data": document},
+            "metadata": {"doctor_id": document},
         }
         for embedding, document in zip(embeddings, documents)
     ]
@@ -77,7 +97,10 @@ def get_relevant_results(query: str, index, metadata=False, results=3):
     embedding_query = embedding_model.embed_query(query)
 
     results = index.query(
-        vector=embedding_query, top_k=results, include_metadata=metadata
+        vector=embedding_query,
+        top_k=results,
+        include_metadata=metadata,
+        include_values=False,
     )
 
     results = results.get("matches")
