@@ -105,7 +105,8 @@ def add_to_index(documents, index):
 
 
 def empty_index(index):
-    index.delete(delete_all=True)
+    collection = index.delete(delete_all=True)
+    return len(collection) == 0
 
 
 # Function to query the index with a question and get the top 3 documents and filters out any irrelevant ones
@@ -205,6 +206,30 @@ def delete_doctor(doctor_id):
             "data": None,
             "errors": [str(e)],
             "message": "Something went wrong while deleting doctor",
+            "statusCode": 500,
+        }
+
+        return jsonify(response), 500
+
+
+def reset_database():
+    try:
+        index = pc.Index("doctors")
+        reset = empty_index(index)
+        response = {
+            "success": reset,
+            "data": None,
+            "message": "Database reset: " + str(reset),
+            "errors": [],
+            "statusCode": 201,
+        }
+        return jsonify(response), 201
+    except Exception as e:
+        response = {
+            "success": False,
+            "data": None,
+            "message": "Something went wrong while resetting the database",
+            "errors": [],
             "statusCode": 500,
         }
 

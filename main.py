@@ -127,6 +127,10 @@ def create_app():
         else:
             abort(502, "Unsupported request method")
 
+    @app.route("/doctor/reset")
+    def reset_database():
+        return reset_database()
+
     return app
 
 
