@@ -47,7 +47,6 @@ def update_from_index(doctor_id: str, updated_document, index) -> None:
     result = get_vector_with_doctor_id(doctor_id, index)
     if len(result) != 0:
         embedding = embed_function([updated_document])
-        print(result)
         index.upsert(
             vectors=[
                 {
