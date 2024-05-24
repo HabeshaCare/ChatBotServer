@@ -1,4 +1,3 @@
-import os
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 from src.DB import (

@@ -1,9 +1,11 @@
-from src.LLM import text_model
+from typing import Any, Dict, List
+from conf.Models import text_model
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
+import json
 
 
-def prepare_embedding(json_data):
+def prepare_embedding(json_data: Dict[str, Any]) -> str:
 
     if "id" not in json_data or json_data.get("id") == None:
         raise ValueError("Id attribute is required")
@@ -26,7 +28,7 @@ def prepare_embedding(json_data):
     return embedding_string
 
 
-def prepare_query(query):
+def prepare_query(query: str) -> str:
     template = """
         Extract the fields and return a string strictly following the following format from the following input query and output it in the following format. You shouldn't output anything else except for the fields in specified format. If you couldn't' find the felid, leave it blank and don't put any text as it's value just leave the key before it and end it with the ':'. 
         Text: {query}
@@ -45,3 +47,18 @@ def prepare_query(query):
     conversation = LLMChain(prompt=prompt, llm=text_model, verbose=False)
     answer = conversation.predict(input=query)
     return answer
+
+
+def prepare_patient_history(json_data: List[Dict[str, Any]]) -> str:
+    if not isinstance(json_data, list):
+        raise ValueError("Input data must be a list of JSON objects")
+
+    formatted_data = []
+    for item in json_data:
+        if not isinstance(item, dict):
+            raise ValueError("Each item in the list must be a JSON object")
+        formatted_data.append(json.dumps(item))
+
+    result = "\n".join(formatted_data)
+
+    return result
