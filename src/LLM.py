@@ -18,8 +18,11 @@ def make_prompt(patient_history: List[Dict[str, Any]] = []) -> str:
          2. If you are asked who you are say that you are 'Hakime' a health assistant chat bot.
          3. If the question is related to health, give a response.
          4. If the question is related to the provided patient data and if the provided data is patient data you are allowed to answer.
-         5. Here is additional instruction to consider only if a patient's data is provided:
-         ```You can also answer questions that are about a patient data if the context is provided below. If you are given a patient's medical data, you should also try to answer the question based on the data provided. If the data is irrelevant to the question being asked, you can ignore it. However, if the data is related but it doesn't have enough information to answer the question, you should by no means answer the question based on assumptions, instead you should just say that you are sorry and there isn't enough information to answer that question.```
+         5. If a patient data is provided, You can also use the data as an additional consideration while answering questions.
+         6. If the data is irrelevant to the question being asked, you can ignore it. 
+         7. However, if the provided data is related but it doesn't have enough information to answer the question, you should by no means answer the question based on assumptions, instead you should just say that you are sorry and there isn't enough information to answer that question.
+         8. If there is no Patient History provided try to answer the question based on the context of the conversation.
+         9. If the given Patient History data isn't relevant to the question, ignore it.
 Previous Conversation: {history}
 Human: {input}
 Patient History: {patient_history}
@@ -39,7 +42,7 @@ def generate(
     model=text_model,
 ):
     prompt = make_prompt(patient_history)
-    conversation = LLMChain(prompt=prompt, llm=model, memory=memory, verbose=True)
+    conversation = LLMChain(prompt=prompt, llm=model, memory=memory, verbose=False)
     try:
         history = memory.load_memory_variables({}).get("history")
         # print(f"History: {history}")
